@@ -27,6 +27,17 @@ const aLightHelper = new THREE.PointLightHelper(aLigthPoint);
 const aGridHelper = new THREE.GridHelper(100,100)
 scene.add(aLightHelper, aGridHelper)
 
+Array(200).fill().forEach(()=>{
+  // create shape
+  const geoStar = new THREE.SphereGeometry(0.25);
+  const matStar = new THREE.MeshStandardMaterial({color:0xffffff});
+  const meshStar = new THREE.Mesh(geoStar, matStar);
+  // position triad generation and seting
+  const [x,y,z] = Array(3).fill().map(()=>THREE.MathUtils.randFloatSpread(100))
+  meshStar.position.set(x,y,z)
+  // adding to scene
+  scene.add(meshStar)
+})
 
 camera.position.setZ(40)
 // camera.position.setY(10)
