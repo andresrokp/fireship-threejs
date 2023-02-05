@@ -6,7 +6,6 @@ import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry'
 import Stats from 'three/examples/jsm/libs/stats.module'
 
 
-
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000)
@@ -58,7 +57,7 @@ Array(200).fill().forEach(()=>{
 /* Text */
 const fontLoader = new FontLoader();
 fontLoader.load(
-  'node_modules/three/examples/fonts/droid/droid_serif_regular.typeface.json',
+  './droid_serif_regular.typeface.json',
   (loadedFont) =>{
       const textGeometry = new TextGeometry('Hello, bitches!',{
         height:1,
