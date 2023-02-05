@@ -1,3 +1,3 @@
 export default{
-    base: '/fireship-threejs/dist/'
+    base: '/threejs-experiments/dist/'
 }
