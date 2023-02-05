@@ -1,6 +1,9 @@
 import './style.css'
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
+import {FontLoader} from 'three/examples/jsm/loaders/FontLoader'
+import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry'
+
 
 
 const scene = new THREE.Scene();
@@ -27,6 +30,7 @@ const aLightHelper = new THREE.PointLightHelper(aLigthPoint);
 const aGridHelper = new THREE.GridHelper(100,100)
 scene.add(aLightHelper, aGridHelper)
 
+/* point stars */
 Array(200).fill().forEach(()=>{
   // create shape
   const geoStar = new THREE.SphereGeometry(0.25);
@@ -39,9 +43,24 @@ Array(200).fill().forEach(()=>{
   scene.add(meshStar)
 })
 
-camera.position.setZ(40)
-// camera.position.setY(10)
-// camera.position.setX(10)
+/* Text */
+const fontLoader = new FontLoader();
+fontLoader.load(
+  'node_modules/three/examples/fonts/droid/droid_serif_regular.typeface.json',
+  (loadedFont) =>{
+      const textGeometry = new TextGeometry('Hello, bitches!',{
+        height:1,
+        size:1,
+        font:loadedFont
+      });
+      const textMaterial = new THREE.MeshBasicMaterial();
+      const textMesh = new THREE.Mesh(textGeometry,textMaterial);
+      textMesh.position.x = -5;
+      scene.add(textMesh);
+    }
+)
+
+camera.position.setZ(30)
 
 const control = new OrbitControls(camera, renderer.domElement)
 
