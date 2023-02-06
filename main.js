@@ -16,18 +16,21 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-const aGeometry = new THREE.TorusGeometry(10,0.5,16,100);
+// constants
+const TORUS_RADIUS = 10;
+
+const aGeometry = new THREE.TorusGeometry(TORUS_RADIUS,0.5,16,100);
 const aMaterial = new THREE.MeshStandardMaterial({color:0xFF1187})
 const aMesh = new THREE.Mesh(aGeometry,aMaterial)
 scene.add(aMesh)
 
 // TODO: abstract torus generation in a function
-const torus2geom = new THREE.TorusGeometry(10,0.5,16,100);
+const torus2geom = new THREE.TorusGeometry(TORUS_RADIUS,0.5,16,100);
 const torus2mat = new THREE.MeshStandardMaterial({color:0x8763ff})
 const torus2mesh = new THREE.Mesh(torus2geom,torus2mat)
 scene.add(torus2mesh)
 
-const torus3geom = new THREE.TorusGeometry(10,0.5,16,100);
+const torus3geom = new THREE.TorusGeometry(TORUS_RADIUS,0.5,16,100);
 const torus3mat = new THREE.MeshStandardMaterial({color:0x65ff65})
 const torus3mesh = new THREE.Mesh(torus3geom,torus3mat)
 scene.add(torus3mesh)
@@ -45,7 +48,7 @@ scene.add(aLightHelper, aGridHelper)
 Array(200).fill().forEach(()=>{
   // create shape
   const geoStar = new THREE.SphereGeometry(0.25);
-  const matStar = new THREE.MeshStandardMaterial({color:0x3300ff});
+  const matStar = new THREE.MeshStandardMaterial({color:0x4444ff});
   const meshStar = new THREE.Mesh(geoStar, matStar);
   // position triad generation and seting
   const [x,y,z] = Array(3).fill().map(()=>THREE.MathUtils.randFloatSpread(100))
@@ -53,6 +56,26 @@ Array(200).fill().forEach(()=>{
   // adding to scene
   scene.add(meshStar)
 })
+
+// earth
+const planetGeom = new THREE.SphereGeometry(TORUS_RADIUS);
+const planetMat = new THREE.MeshStandardMaterial({color:0xff0000, wireframe:true});
+const planetMesh = new THREE.Mesh(planetGeom, planetMat);
+scene.add(planetMesh)
+
+// point A
+const departureGeom = new THREE.SphereGeometry(0.2);
+const departureMat = new THREE.MeshStandardMaterial({color:0xffffff});
+const  departureMesh = new THREE.Mesh( departureGeom,  departureMat);
+departureMesh.position.setFromSphericalCoords(TORUS_RADIUS,0,0)
+scene.add(departureMesh)
+
+// point B
+const arrivalGeom = new THREE.SphereGeometry(0.2);
+const arrivalMat = new THREE.MeshStandardMaterial({color:0xffffff});
+const  arrivalMesh = new THREE.Mesh( arrivalGeom,  arrivalMat);
+arrivalMesh.position.setFromSphericalCoords(TORUS_RADIUS,3.1415,0)
+scene.add(arrivalMesh)
 
 /* Text */
 const fontLoader = new FontLoader();
@@ -85,8 +108,9 @@ fontLoader.load(
     }
 )
 
-camera.position.setZ(0.2)
-camera.position.setX(2)
+// camera.position.setZ(0.2)
+// camera.position.setX(2)
+camera.position.setZ(25)
 
 const control = new OrbitControls(camera, renderer.domElement)
 
@@ -109,7 +133,6 @@ function animate(){
   torus3mesh.rotateX(-0.0081)
   torus3mesh.rotateY(0.0035)
   torus3mesh.rotateZ(-0.0081)
-  
   
   stats.update()
 
