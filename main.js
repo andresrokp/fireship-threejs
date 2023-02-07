@@ -64,7 +64,7 @@ const planetMesh = new THREE.Mesh(planetGeom, planetMat);
 scene.add(planetMesh)
 
 // point Departure
-const departureSpherical = new THREE.Spherical(TORUS_RADIUS,0,0)
+const departureSpherical = new THREE.Spherical(TORUS_RADIUS+1,3.1415/2,3.1415/4)
 const departureGeom = new THREE.SphereGeometry(0.2);
 const departureMat = new THREE.MeshStandardMaterial({color:0xffffff});
 const  departureMesh = new THREE.Mesh( departureGeom,  departureMat);
@@ -72,21 +72,21 @@ departureMesh.position.setFromSpherical(departureSpherical)
 scene.add(departureMesh)
 
 // point Arrival
-const arrivalSpherical = new THREE.Spherical(TORUS_RADIUS,3.1415,0)
+const arrivalSpherical = new THREE.Spherical(TORUS_RADIUS,3.1415*3/4,-3.1415/8)
 const arrivalVector3 = new THREE.Vector3().setFromSpherical(arrivalSpherical)
 const arrivalGeom = new THREE.SphereGeometry(0.2);
 const arrivalMat = new THREE.MeshStandardMaterial({color:0xffffff});
 const  arrivalMesh = new THREE.Mesh( arrivalGeom,  arrivalMat);
-arrivalMesh.position.set(arrivalVector3);
+arrivalMesh.position.copy(arrivalVector3)
 scene.add(arrivalMesh)
 
 // projectile
+const projectileSpherical = new THREE.Spherical().copy(departureSpherical)
+const projectileVector3 = new THREE.Vector3().setFromSpherical(projectileSpherical)
 const projectileGeom = new THREE.SphereGeometry(0.4);
 const projectileMat = new THREE.MeshStandardMaterial({color:0x00ff00});
 const  projectileMesh = new THREE.Mesh( projectileGeom,  projectileMat);
-const projectileSpherical = new THREE.Spherical(TORUS_RADIUS+1,3.1415/2,3.1415/4)
-const projectileVector3 = new THREE.Vector3()
-projectileMesh.position.setFromSpherical(departureSpherical)
+projectileMesh.position.copy(projectileVector3)
 scene.add(projectileMesh)
 
 /* Text */
@@ -134,27 +134,29 @@ function animate(){
   requestAnimationFrame(animate)
   
   // TODO: obstract rotations in a function
-  aMesh.rotateX(0.01)
-  aMesh.rotateY(0.005)
-  aMesh.rotateZ(0.01)
+  aMesh.rotateX(0.01);
+  aMesh.rotateY(0.005);
+  aMesh.rotateZ(0.01);
   
-  torus2mesh.rotateX(-0.015)
-  torus2mesh.rotateY(-0.0055)
-  torus2mesh.rotateZ(-0.015)
+  torus2mesh.rotateX(-0.015);
+  torus2mesh.rotateY(-0.0055);
+  torus2mesh.rotateZ(-0.015);
 
-  torus3mesh.rotateX(-0.0081)
-  torus3mesh.rotateY(0.0035)
-  torus3mesh.rotateZ(-0.0081)
+  torus3mesh.rotateX(-0.0081);
+  torus3mesh.rotateY(0.0035);
+  torus3mesh.rotateZ(-0.0081);
 
-  projectileVector3.setFromSpherical(projectileSpherical)
-  arrivalVector3.angleTo(projectileVector3) > 0.01 ? projectileSpherical.phi -= 0.01 : null;
-  projectileMesh.position.setFromSpherical(projectileSpherical)
+  projectileVector3.setFromSpherical(projectileSpherical);
+  if(arrivalVector3.angleTo(projectileVector3) > 0.01){
+    projectileSpherical.phi += 0.01
+  };
+  projectileMesh.position.setFromSpherical(projectileSpherical);
 
-  stats.update()
+  stats.update();
 
-  control.update()
+  control.update();
 
-  renderer.render(scene, camera)
+  renderer.render(scene, camera);
 }
 
-animate()
+animate();
