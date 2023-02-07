@@ -80,10 +80,14 @@ const  arrivalMesh = new THREE.Mesh( arrivalGeom,  arrivalMat);
 arrivalMesh.position.copy(arrivalVector3)
 scene.add(arrivalMesh)
 
+// delta angles
+const deltaPhi = arrivalSpherical.phi - departureSpherical.phi
+const deltaTheta = arrivalSpherical.theta - departureSpherical.theta
+
 // projectile
 const projectileSpherical = new THREE.Spherical().copy(departureSpherical)
 const projectileVector3 = new THREE.Vector3().setFromSpherical(projectileSpherical)
-const projectileGeom = new THREE.SphereGeometry(0.4);
+const projectileGeom = new THREE.BoxGeometry(0.5,0.5,2);
 const projectileMat = new THREE.MeshStandardMaterial({color:0x00ff00});
 const  projectileMesh = new THREE.Mesh( projectileGeom,  projectileMat);
 projectileMesh.position.copy(projectileVector3)
@@ -146,11 +150,15 @@ function animate(){
   torus3mesh.rotateY(0.0035);
   torus3mesh.rotateZ(-0.0081);
 
+  // TODO: keep geometrical relative coherence while rotating the earth
+
   projectileVector3.setFromSpherical(projectileSpherical);
   if(arrivalVector3.angleTo(projectileVector3) > 0.01){
-    projectileSpherical.phi += 0.01
+    projectileSpherical.phi += deltaPhi*0.01
+    projectileSpherical.theta += deltaTheta*0.01
+    projectileMesh.lookAt(new THREE.Vector3().setFromSpherical(projectileSpherical));
+    projectileMesh.position.setFromSpherical(projectileSpherical);
   };
-  projectileMesh.position.setFromSpherical(projectileSpherical);
 
   stats.update();
 
