@@ -63,19 +63,31 @@ const planetMat = new THREE.MeshStandardMaterial({color:0xff0000, wireframe:true
 const planetMesh = new THREE.Mesh(planetGeom, planetMat);
 scene.add(planetMesh)
 
-// point A
+// point Departure
+const departureSpherical = new THREE.Spherical(TORUS_RADIUS,0,0)
 const departureGeom = new THREE.SphereGeometry(0.2);
 const departureMat = new THREE.MeshStandardMaterial({color:0xffffff});
 const  departureMesh = new THREE.Mesh( departureGeom,  departureMat);
-departureMesh.position.setFromSphericalCoords(TORUS_RADIUS,0,0)
+departureMesh.position.setFromSpherical(departureSpherical)
 scene.add(departureMesh)
 
-// point B
+// point Arrival
+const arrivalSpherical = new THREE.Spherical(TORUS_RADIUS,3.1415,0)
+const arrivalVector3 = new THREE.Vector3().setFromSpherical(arrivalSpherical)
 const arrivalGeom = new THREE.SphereGeometry(0.2);
 const arrivalMat = new THREE.MeshStandardMaterial({color:0xffffff});
 const  arrivalMesh = new THREE.Mesh( arrivalGeom,  arrivalMat);
-arrivalMesh.position.setFromSphericalCoords(TORUS_RADIUS,3.1415,0)
+arrivalMesh.position.set(arrivalVector3);
 scene.add(arrivalMesh)
+
+// projectile
+const projectileGeom = new THREE.SphereGeometry(0.4);
+const projectileMat = new THREE.MeshStandardMaterial({color:0x00ff00});
+const  projectileMesh = new THREE.Mesh( projectileGeom,  projectileMat);
+const projectileSpherical = new THREE.Spherical(TORUS_RADIUS+1,3.1415/2,3.1415/4)
+const projectileVector3 = new THREE.Vector3()
+projectileMesh.position.setFromSpherical(departureSpherical)
+scene.add(projectileMesh)
 
 /* Text */
 const fontLoader = new FontLoader();
@@ -91,7 +103,7 @@ fontLoader.load(
       const textMesh = new THREE.Mesh(textGeometry,textMaterial);
       textMesh.position.x = -5;
       textMesh.position.z = -1;
-      scene.add(textMesh);      
+      scene.add(textMesh);
 
       const basicLen = 0.3
       const textGeometry2 = new TextGeometry('By: andresrokp',{
@@ -133,7 +145,11 @@ function animate(){
   torus3mesh.rotateX(-0.0081)
   torus3mesh.rotateY(0.0035)
   torus3mesh.rotateZ(-0.0081)
-  
+
+  projectileVector3.setFromSpherical(projectileSpherical)
+  arrivalVector3.angleTo(projectileVector3) > 0.01 ? projectileSpherical.phi -= 0.01 : null;
+  projectileMesh.position.setFromSpherical(projectileSpherical)
+
   stats.update()
 
   control.update()
