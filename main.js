@@ -5,6 +5,14 @@ import {FontLoader} from 'three/examples/jsm/loaders/FontLoader'
 import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry'
 import Stats from 'three/examples/jsm/libs/stats.module'
 
+const resetButton = document.getElementsByClassName('reset-btn')[0]
+resetButton.addEventListener('click',resetAnimation)
+
+function resetAnimation(){
+  console.log('me hicieron click')
+  projectileSpherical.copy(departureSpherical)
+  projectileVector3.setFromSpherical(projectileSpherical)
+}
 
 const scene = new THREE.Scene();
 
