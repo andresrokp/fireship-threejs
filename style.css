@@ -7,7 +7,7 @@ canvas{
 
 .reset-btn{
   position: fixed;
-  top: 90vh;
-  left: 10px;
+  top: 60px;
+  left: 0px;
   z-index: 1;
 }

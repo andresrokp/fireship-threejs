@@ -5,174 +5,150 @@ import {FontLoader} from 'three/examples/jsm/loaders/FontLoader'
 import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry'
 import Stats from 'three/examples/jsm/libs/stats.module'
 
-const resetButton = document.getElementsByClassName('reset-btn')[0]
-resetButton.addEventListener('click',resetAnimation)
-
-function resetAnimation(){
-  console.log('me hicieron click')
-  projectileSpherical.copy(departureSpherical)
-  projectileVector3.setFromSpherical(projectileSpherical)
-}
-
+// threejs basics
 const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000)
-
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg')
 })
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight);
+// camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000)
+camera.position.setZ(25)
+// UI powerups
+const control = new OrbitControls(camera, renderer.domElement)
+const stats = Stats()
+stats.showPanel(1)
+document.body.appendChild(stats.dom)
 
-// constants
-const TORUS_RADIUS = 10;
+// torus
+const TORUS_DATA = [10, 0.5, 16, 100] // [radius, section, segments, arc]
+function torusGenerator(data, color){
+  const torusGeometry = new THREE.TorusGeometry(...data);
+  const torusMaterial = new THREE.MeshStandardMaterial({color: color});
+  const torusMesh =  new THREE.Mesh(torusGeometry,torusMaterial);
+  return torusMesh;
+}
+const torus1 = torusGenerator(TORUS_DATA, 0xFF1187)
+const torus2 = torusGenerator(TORUS_DATA, 0x8763ff)
+const torus3 = torusGenerator(TORUS_DATA, 0x65ff65)
+scene.add(torus1, torus2, torus3)
 
-const aGeometry = new THREE.TorusGeometry(TORUS_RADIUS,0.5,16,100);
-const aMaterial = new THREE.MeshStandardMaterial({color:0xFF1187})
-const aMesh = new THREE.Mesh(aGeometry,aMaterial)
-scene.add(aMesh)
-
-// TODO: abstract torus generation in a function
-const torus2geom = new THREE.TorusGeometry(TORUS_RADIUS,0.5,16,100);
-const torus2mat = new THREE.MeshStandardMaterial({color:0x8763ff})
-const torus2mesh = new THREE.Mesh(torus2geom,torus2mat)
-scene.add(torus2mesh)
-
-const torus3geom = new THREE.TorusGeometry(TORUS_RADIUS,0.5,16,100);
-const torus3mat = new THREE.MeshStandardMaterial({color:0x65ff65})
-const torus3mesh = new THREE.Mesh(torus3geom,torus3mat)
-scene.add(torus3mesh)
-
+// lights
 const aLigthPoint = new THREE.PointLight(0xffffff);
 aLigthPoint.position.set(10,5,5)
 const anAmbientLight = new THREE.AmbientLight(0xffffff, 0.5)
 scene.add(aLigthPoint, anAmbientLight)
-
+// visual helpers
 const aLightHelper = new THREE.PointLightHelper(aLigthPoint);
 const aGridHelper = new THREE.GridHelper(100,100)
 scene.add(aLightHelper, aGridHelper)
 
-/* point stars */
+// point stars
 Array(200).fill().forEach(()=>{
   // create shape
   const geoStar = new THREE.SphereGeometry(0.25);
   const matStar = new THREE.MeshStandardMaterial({color:0x4444ff});
   const meshStar = new THREE.Mesh(geoStar, matStar);
-  // position triad generation and seting
+  // position generation and setting
   const [x,y,z] = Array(3).fill().map(()=>THREE.MathUtils.randFloatSpread(100))
   meshStar.position.set(x,y,z)
   // adding to scene
   scene.add(meshStar)
 })
 
-// earth
-const planetGeom = new THREE.SphereGeometry(TORUS_RADIUS);
-const planetMat = new THREE.MeshStandardMaterial({color:0xff0000, wireframe:true});
-const planetMesh = new THREE.Mesh(planetGeom, planetMat);
-scene.add(planetMesh)
+// spheres
+function sphereGenerator(radius, color, wire){
+  const sphereGeom = new THREE.SphereGeometry(radius);
+  const sphereMat = new THREE.MeshStandardMaterial({color:color, wireframe:wire});
+  return new THREE.Mesh(sphereGeom, sphereMat);
+}
+const planet = sphereGenerator(TORUS_DATA[0], 0xff0000, true);
+const  departurePoint = sphereGenerator(0.2,0xffffff, false);
+const  arrivalPoint = sphereGenerator(0.2,0xffffff, false);
+scene.add(planet, departurePoint, arrivalPoint)
 
-// point Departure
-const departureSpherical = new THREE.Spherical(TORUS_RADIUS+1,3.1415/2,3.1415/4)
-const departureGeom = new THREE.SphereGeometry(0.2);
-const departureMat = new THREE.MeshStandardMaterial({color:0xffffff});
-const  departureMesh = new THREE.Mesh( departureGeom,  departureMat);
-departureMesh.position.setFromSpherical(departureSpherical)
-scene.add(departureMesh)
-
-// point Arrival
-const arrivalSpherical = new THREE.Spherical(TORUS_RADIUS,3.1415*3/4,-3.1415/8)
-const arrivalVector3 = new THREE.Vector3().setFromSpherical(arrivalSpherical)
-const arrivalGeom = new THREE.SphereGeometry(0.2);
-const arrivalMat = new THREE.MeshStandardMaterial({color:0xffffff});
-const  arrivalMesh = new THREE.Mesh( arrivalGeom,  arrivalMat);
-arrivalMesh.position.copy(arrivalVector3)
-scene.add(arrivalMesh)
-
-// delta angles
-const deltaPhi = arrivalSpherical.phi - departureSpherical.phi
-const deltaTheta = arrivalSpherical.theta - departureSpherical.theta
-
-// projectile
-const projectileSpherical = new THREE.Spherical().copy(departureSpherical)
-const projectileVector3 = new THREE.Vector3().setFromSpherical(projectileSpherical)
+// projectile box
 const projectileGeom = new THREE.BoxGeometry(0.5,0.5,2);
 const projectileMat = new THREE.MeshStandardMaterial({color:0x00ff00});
 const  projectileMesh = new THREE.Mesh( projectileGeom,  projectileMat);
-projectileMesh.position.copy(projectileVector3)
 scene.add(projectileMesh)
 
+// *positioning*
+// point Departure
+const departureSpherical = new THREE.Spherical(TORUS_DATA[0],3.1415/2,3.1415/4)
+departurePoint.position.setFromSpherical(departureSpherical)
+// point Arrival
+const arrivalSpherical = new THREE.Spherical(TORUS_DATA[0],3.1415*3/4,-3.1415/8)
+const arrivalVector3 = new THREE.Vector3().setFromSpherical(arrivalSpherical)
+arrivalPoint.position.copy(arrivalVector3)
+// delta angles
+const deltaPhi = arrivalSpherical.phi - departureSpherical.phi
+const deltaTheta = arrivalSpherical.theta - departureSpherical.theta
+// projectile
+const projectileSpherical = new THREE.Spherical().copy(departureSpherical)
+projectileSpherical.radius += 1;
+const projectileVector3 = new THREE.Vector3().setFromSpherical(projectileSpherical)
+projectileMesh.position.copy(projectileVector3)
+
 /* Text */
+function textGenerator(msg,h,s,font,color){ // mesage, height, size, loadedFont, color
+  const textGeometry = new TextGeometry(msg,{
+    height:h,
+    size:s,
+    font:font
+  });
+  const textMaterial = new THREE.MeshStandardMaterial({color:color});
+  return new THREE.Mesh(textGeometry,textMaterial);
+}
 const fontLoader = new FontLoader();
 fontLoader.load(
   './droid_serif_regular.typeface.json',
   (loadedFont) =>{
-      const textGeometry = new TextGeometry('Hello, bitches!',{
-        height:1,
-        size:1,
-        font:loadedFont
-      });
-      const textMaterial = new THREE.MeshStandardMaterial({color:0xccffff});
-      const textMesh = new THREE.Mesh(textGeometry,textMaterial);
-      textMesh.position.x = -5;
-      textMesh.position.z = -1;
-      scene.add(textMesh);
+      const text1 = textGenerator('Hello, bitches!',1,1,loadedFont,0xccffff);
+      text1.position.set(-5,0,-1);
+      scene.add(text1);
 
-      const basicLen = 0.3
-      const textGeometry2 = new TextGeometry('By: andresrokp',{
-        height:basicLen,
-        size:basicLen,
-        font:loadedFont
-      });
-      const textMaterial2 = new THREE.MeshStandardMaterial({color:0xccffdd});
-      const textMesh2 = new THREE.Mesh(textGeometry2,textMaterial2);
-      textMesh2.position.x = 1.4;
-      textMesh2.position.y = -basicLen-0.1;
-      textMesh2.position.z = -basicLen;
-      scene.add(textMesh2)
+      const len = 0.3
+      const text2 = textGenerator('By: andresrokp',len,len,loadedFont,0xccffff);
+      scene.add(text2)
     }
 )
 
-// camera.position.setZ(0.2)
-// camera.position.setX(2)
-camera.position.setZ(25)
-
-const control = new OrbitControls(camera, renderer.domElement)
-
-const stats = Stats()
-stats.showPanel(1)
-document.body.appendChild(stats.dom)
+function rotateMesh(mesh,rx,ry,rz){
+  mesh.rotateX(rx);
+  mesh.rotateY(ry);
+  mesh.rotateZ(rz);
+}
 
 function animate(){
   requestAnimationFrame(animate)
   
-  // TODO: obstract rotations in a function
-  aMesh.rotateX(0.01);
-  aMesh.rotateY(0.005);
-  aMesh.rotateZ(0.01);
-  
-  torus2mesh.rotateX(-0.015);
-  torus2mesh.rotateY(-0.0055);
-  torus2mesh.rotateZ(-0.015);
+  rotateMesh(torus1,0.01,0.005,0.01);
+  rotateMesh(torus2,-0.015,-0.0055,-0.015);
+  rotateMesh(torus3,-0.0081,0.0035,-0.0081);
 
-  torus3mesh.rotateX(-0.0081);
-  torus3mesh.rotateY(0.0035);
-  torus3mesh.rotateZ(-0.0081);
+  // TODO: rotate planet and keep geometrical relative coherence
 
-  // TODO: keep geometrical relative coherence while rotating the earth
-
+  // projectile movement
   projectileVector3.setFromSpherical(projectileSpherical);
   if(arrivalVector3.angleTo(projectileVector3) > 0.01){
-    projectileSpherical.phi += deltaPhi*0.01
-    projectileSpherical.theta += deltaTheta*0.01
+    projectileSpherical.phi += deltaPhi*0.003
+    projectileSpherical.theta += deltaTheta*0.003
     projectileMesh.lookAt(new THREE.Vector3().setFromSpherical(projectileSpherical));
     projectileMesh.position.setFromSpherical(projectileSpherical);
   };
 
   stats.update();
-
   control.update();
-
   renderer.render(scene, camera);
 }
-
 animate();
+
+
+// reset button action
+const resetButton = document.getElementsByClassName('reset-btn')[0]
+resetButton.addEventListener('click',(e)=>{
+  projectileSpherical.copy(departureSpherical).radius += 1
+  projectileVector3.setFromSpherical(projectileSpherical)
+})
