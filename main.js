@@ -71,15 +71,15 @@ scene.add(planet, departurePoint, arrivalPoint)
 // projectile box
 const projectileGeom = new THREE.BoxGeometry(0.5,0.5,2);
 const projectileMat = new THREE.MeshStandardMaterial({color:0x00ff00});
-const  projectileMesh = new THREE.Mesh( projectileGeom,  projectileMat);
+const  projectileMesh = new THREE.Mesh(projectileGeom,  projectileMat);
 scene.add(projectileMesh)
 
 // *positioning*
 // point Departure
-const departureSpherical = new THREE.Spherical(TORUS_DATA[0],3.1415/2,3.1415/4)
+const departureSpherical = new THREE.Spherical(TORUS_DATA[0],3.1415/2,3*3.1415/4)
 departurePoint.position.setFromSpherical(departureSpherical)
 // point Arrival
-const arrivalSpherical = new THREE.Spherical(TORUS_DATA[0],3.1415*3/4,-3.1415/8)
+const arrivalSpherical = new THREE.Spherical(TORUS_DATA[0],3.1415*3/4,-3*3.1415/8)
 const arrivalVector3 = new THREE.Vector3().setFromSpherical(arrivalSpherical)
 arrivalPoint.position.copy(arrivalVector3)
 // delta angles
@@ -147,8 +147,23 @@ animate();
 
 
 // reset button action
-const resetButton = document.getElementsByClassName('reset-btn')[0]
+const resetButton = document.getElementById('reset-btn');
 resetButton.addEventListener('click',(e)=>{
-  projectileSpherical.copy(departureSpherical).radius += 1
-  projectileVector3.setFromSpherical(projectileSpherical)
+  projectileSpherical.copy(departureSpherical).radius += 1;
+  projectileVector3.setFromSpherical(projectileSpherical);
 })
+
+// reset button action
+const goButton = document.getElementById('go-btn');
+goButton.addEventListener('click',(e)=>{
+  const lat = parseFloat(document.getElementById('lat-text').value);
+  const lon = parseFloat(document.getElementById('lon-text').value);
+  console.log(latLongToSphere(lat, lon));
+})
+
+// coordinate transformation helper
+function latLongToSphere(latitude, longitude) {
+  const phi = (90 - latitude) * (Math.PI / 180);
+  const theta = longitude * (Math.PI / 180);
+  return {phi, theta};
+}

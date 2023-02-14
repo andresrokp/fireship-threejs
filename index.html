@@ -6,8 +6,16 @@
     <title>afr threejs sandbox</title>
   </head>
   <body>
-    <button class="reset-btn">Reset</button>
+    
+    <!-- resset action -->
+    <button class="btn reset" id="reset-btn">Reset</button>
+    <!-- lat lon action -->
+    <input id="lat-text" class="text-box tb-1" type="number" placeholder="lat"/>
+    <input id="lon-text" class="text-box tb-2" type="number" placeholder="lon"/>
+    <button class="btn go" id="go-btn">Go!</button>
+    <!-- 3D world -->
     <canvas id="bg"></canvas>
+
     <script type="module" src="/main.js"></script>
   </body>
 </html>

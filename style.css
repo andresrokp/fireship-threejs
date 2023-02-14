@@ -5,9 +5,32 @@ canvas{
   z-index: 0;
 }
 
-.reset-btn{
+.btn{
   position: fixed;
-  top: 60px;
+  z-index: 1;
+  left: 0;
+}
+
+.reset{
+  top: 50px;
+}
+
+.go{
+  top: 140px;
+}
+
+.text-box{
+  position: fixed;
   left: 0px;
   z-index: 1;
+  width: 70px;
 }
+
+.tb-1{
+  top: 100px;
+}
+
+.tb-2{
+  top: 120px;
+}
+
