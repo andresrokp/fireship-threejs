@@ -5,32 +5,18 @@ canvas{
   z-index: 0;
 }
 
-.btn{
+.controls{
   position: fixed;
   z-index: 1;
   left: 0;
-}
-
-.reset{
   top: 50px;
 }
 
-.go{
-  top: 140px;
+.controls > *{
+  display: block;
 }
 
-.text-box{
-  position: fixed;
-  left: 0px;
-  z-index: 1;
-  width: 70px;
-}
-
-.tb-1{
-  top: 100px;
-}
-
-.tb-2{
-  top: 120px;
+.tb-1, .slt-country{
+  margin-top: 10px;
 }
 

@@ -6,13 +6,22 @@
     <title>afr threejs sandbox</title>
   </head>
   <body>
-    
-    <!-- resset action -->
-    <button class="btn reset" id="reset-btn">Reset</button>
-    <!-- lat lon action -->
-    <input id="lat-text" class="text-box tb-1" type="number" placeholder="lat"/>
-    <input id="lon-text" class="text-box tb-2" type="number" placeholder="lon"/>
-    <button class="btn go" id="go-btn">Go!</button>
+    <section class="controls">
+      <!-- resset action -->
+      <button class="btn-reset" id="reset-btn">Reset</button>
+      <!-- lat lon action -->
+      <input id="lat-text" class="tb-1" type="number" placeholder="lat"/>
+      <input id="lon-text" class="tb-2" type="number" placeholder="lon"/>
+      <button class="btn-go" id="go-btn">Go!</button>
+      <!-- User Selections CountryCity -->
+      <select class="slt-country" name="" id="country-select">
+        <option value="">Select a Country</option>
+      </select>
+      <select class="slt-city" name="" id="city-select" disabled>
+        <option value="">Select a City</option>
+      </select>
+      <button class="btn-print" id="print-button" disabled>Print!</button>
+    </section>
     <!-- 3D world -->
     <canvas id="bg"></canvas>
 
