@@ -14,17 +14,18 @@
       <input id="lon-text" class="tb-2" type="number" placeholder="lon"/>
       <button class="btn-go" id="go-btn">Go!</button>
       <!-- User Selections CountryCity -->
-      <select class="slt-country" name="" id="country-select">
+      <select class="slt-country" name="" id="country-selector">
         <option value="">Select a Country</option>
       </select>
-      <select class="slt-city" name="" id="city-select" disabled>
+      <select class="slt-city" name="" id="city-selector" disabled>
         <option value="">Select a City</option>
       </select>
-      <button class="btn-print" id="print-button" disabled>Print!</button>
+      <button class="btn-print" id="city-button" disabled>Print!</button>
     </section>
     <!-- 3D world -->
     <canvas id="bg"></canvas>
 
+    <script type="module" src="/userInputs.js"></script>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

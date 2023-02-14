@@ -105,12 +105,13 @@ const fontLoader = new FontLoader();
 fontLoader.load(
   './droid_serif_regular.typeface.json',
   (loadedFont) =>{
-      const text1 = textGenerator('Hello, bitches!',1,1,loadedFont,0xccffff);
+      const text1 = textGenerator('Hello, ThreeJS!',1,1,loadedFont,0xccffff);
       text1.position.set(-5,0,-1);
       scene.add(text1);
-
+      
       const len = 0.3
       const text2 = textGenerator('By: andresrokp',len,len,loadedFont,0xccffff);
+      text2.position.set(1,-len,-len);
       scene.add(text2)
     }
 )
@@ -146,24 +147,7 @@ function animate(){
 animate();
 
 
-// reset button action
-const resetButton = document.getElementById('reset-btn');
-resetButton.addEventListener('click',(e)=>{
+export function resetAirplane(){
   projectileSpherical.copy(departureSpherical).radius += 1;
   projectileVector3.setFromSpherical(projectileSpherical);
-})
-
-// reset button action
-const goButton = document.getElementById('go-btn');
-goButton.addEventListener('click',(e)=>{
-  const lat = parseFloat(document.getElementById('lat-text').value);
-  const lon = parseFloat(document.getElementById('lon-text').value);
-  console.log(latLongToSphere(lat, lon));
-})
-
-// coordinate transformation helper
-function latLongToSphere(latitude, longitude) {
-  const phi = (90 - latitude) * (Math.PI / 180);
-  const theta = longitude * (Math.PI / 180);
-  return {phi, theta};
 }
