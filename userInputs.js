@@ -19,3 +19,23 @@ function latLonToSphere(latitude, longitude) {
   const theta = longitude * (Math.PI / 180);
   return {phi, theta};
 }
+
+const countrySelector = document.getElementById('country-selector');
+const citySelector = document.getElementById('city-selector');
+const cityActionBtn = document.getElementById('city-button');
+
+places.forEach(p => {
+    const option = new Option(p.name,p.name);
+    countrySelector.appendChild(option);
+})
+
+countrySelector.addEventListener('change',function(){
+  const selectedCountryName = this.value
+  console.log(selectedCountryName)
+  const selectedCountryData = places.find(data => data.name == selectedCountryName);
+  selectedCountryData.cities.forEach(c => {
+    const option = new Option(c.name,c.name);
+    citySelector.appendChild(option);
+  })
+  citySelector.removeAttribute('disabled')
+})
